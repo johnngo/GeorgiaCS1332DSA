@@ -26,6 +26,18 @@ public class SinglyLinkedList<T> {
      */
     public void addToFront(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if(data == null) {
+            throw new IllegalArgumentException("Cannot add null to SinglyLinkedList.");
+        }
+
+        if (head == null) {
+            head = new SinglyLinkedListNode<T>(data);
+            tail =  head;
+        } else {
+            SinglyLinkedListNode<T> newNode = new SinglyLinkedListNode<>(data, head);
+            head = newNode;
+        }
+        size++;
     }
 
     /**
@@ -38,6 +50,17 @@ public class SinglyLinkedList<T> {
      */
     public void addToBack(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null) {
+            throw new IllegalArgumentException("Cannot add null to SinglyLinkedList.");
+        }
+        if (head == null){
+            head = new SinglyLinkedListNode<T>(data);
+            tail = head;
+        } else {
+            tail.setNext(new SinglyLinkedListNode<>(data));
+            tail = tail.getNext();
+        }
+        size++;
     }
 
     /**
@@ -50,6 +73,20 @@ public class SinglyLinkedList<T> {
      */
     public T removeFromFront() {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if(head == null){
+            throw new NoSuchElementException(" Cannot remove from an empty SinglyLinkedList");
+        }
+
+        T data = head.getData();
+
+        if(head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            head = head.getNext();
+        }
+        size--;
+        return data;
     }
 
     /**
@@ -62,6 +99,26 @@ public class SinglyLinkedList<T> {
      */
     public T removeFromBack() {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (head == null) {
+            throw new NoSuchElementException("Cannot remove from an empty SinglyLinkedList.");
+        }
+
+        T data = tail.getData();
+
+        if(head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            SinglyLinkedListNode<T> cur = head;
+            while (cur.getNext() != null && cur.getNext().getNext() != null){
+                cur = cur.getNext();
+            }
+
+            tail =cur;
+            tail.setNext(null);
+        }
+        size--;
+        return data;
     }
 
     /**
