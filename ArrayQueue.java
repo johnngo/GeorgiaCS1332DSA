@@ -45,6 +45,17 @@ public class ArrayQueue<T> {
      */
     public void enqueue(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if(data ==null) {
+            throw new IllegalStateException("Cannot add null to ArrayQueue");
+        }
+        int index = (front + size) % backingArray.length;
+
+        if( size == backingArray.length) {
+            resize();
+            backingArray[size] = data;
+        }else {
+            backingArray[index] = data;
+        }
     }
 
     /**
@@ -64,6 +75,16 @@ public class ArrayQueue<T> {
      */
     public T dequeue() {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (size == 0) {
+            throw new NoSuchElementException("Cannot dequeue from an empty queue.");
+        }
+
+        T data = backingArray[front];
+        backingArray[front] = null;
+        front = (front + 1) % backingArray.length;
+        size--;
+
+        return data;
     }
 
     /**
@@ -90,5 +111,16 @@ public class ArrayQueue<T> {
     public int size() {
         // DO NOT MODIFY THIS METHOD!
         return size;
+    }
+
+    private void resize() {
+        T[] newArray = (T[]) new Object[backingArray.length * 2];
+
+        for( int i = 0, cur= front; i < backingArray.length; i++) {
+            newArray[i] = backingArray[cur];
+            cur = (cur + 1) % backingArray.length;
+        }
+        backingArray = newArray;
+        front = 0;
     }
 }
