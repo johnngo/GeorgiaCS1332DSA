@@ -64,6 +64,17 @@ public class MinHeap<T extends Comparable<? super T>> {
      */
     public T remove() {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if(size == 0){
+            throw new IllegalArgumentException("Cannot remove from an empty MinHeap.");
+        }
+
+        T data = backingArray[1];
+        backingArray[1] = backingArray[size];
+        backingArray[size] = null;
+        size--;
+        downheap();
+        
+        return data;
     }
 
     /**
@@ -90,5 +101,67 @@ public class MinHeap<T extends Comparable<? super T>> {
     public int size() {
         // DO NOT MODIFY THIS METHOD!
         return size;
+    }
+
+    private void resize() {
+        T[] newArray = (T[]) new Comparable[backingArray.length * 2];
+
+        for (int i = 0; i < backingArray.length; i++) {
+            newArray[i] = backingArray[i];
+        }
+
+        backingArray = newArray;
+    }
+
+    private void upheap() {
+        for (int child = size; child > 1; child /= 2) {
+            int parent = child / 2;
+
+            if (isSmaller(child, parent)) {
+                swap(child, parent);
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void downheap() {
+        int parent = 1;
+
+        while (hasLeftChild(parent)) {
+            int leftChild = parent * 2;
+            int rightChild = (parent * 2) + 1;
+            int smallerChild = leftChild;
+
+            if (hasRightChild(parent) && isSmaller(rightChild, leftChild)) {
+                smallerChild = rightChild;
+            }
+
+            if (isSmaller(smallerChild, parent)) {
+                swap(smallerChild, parent);
+            } else {
+                break;
+            }
+
+            parent = smallerChild;
+        }
+    }
+
+    private void swap(int indexA, int indexB) {
+        T temp = backingArray[indexA];
+        backingArray[indexA] = backingArray[indexB];
+        backingArray[indexB] = temp;
+    }
+
+    private boolean isSmaller(int indexA, int indexB) {
+        return backingArray[indexA].compareTo(backingArray[indexB]) < 0;
+    }
+
+    private boolean hasRightChild(int index) {
+        return (index * 2) + 1 <= size;
+    }
+
+    private boolean hasLeftChild(int index) {
+        return (index * 2) <= size;
     }
 }
