@@ -110,6 +110,38 @@ public class ExternalChainingHashMap<K, V> {
      */
     public V remove(K key) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (key ==null) {
+            throw new IllegalArgumentException("ExternalChainingHashMap key must not be null");
+        }
+
+        int hash = Math.abs(key.hashCode() % table.length);
+        V value = null;
+
+        if (table[hash] != null) {
+            if (table[hash].getKey().equals(key)) {
+                value = table[hash].getValue();
+                table[hash] = table[hash].getNext();
+            } else {
+                ExternalChainingMapEntry<K, V> prev = table[hash];
+
+                while (prev.getNext() != null) {
+                    if (prev.getNext().getKey().equals(key)) {
+                        value = prev.getNext().getValue();
+                        prev.setNext(prev.getNext().getNext());
+                        break;
+                    }
+
+                    prev = prev.getNext();
+                }
+            }
+        }
+
+        if (value == null) {
+            throw new NoSuchElementException("Key not found in ExternalChainingHashMap.");
+        }
+
+        size--;
+        return value;
     }
 
     /**
@@ -131,6 +163,27 @@ public class ExternalChainingHashMap<K, V> {
      */
     private void resizeBackingTable(int length) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        ExternalChainingMapEntry<K, V>[] newTable =
+            (ExternalChainingMapEntry<K, V>[]) new ExternalChainingMapEntry[length];
+        
+        for (ExternalChainingMapEntry<K, V> entry : table) {
+            ExternalChainingMapEntry<K, V> cur = entry;
+
+            while (cur != null) {
+                int hash = Math.abs(cur.getKey().hashCode() % newTable.length);
+
+                if (newTable[hash] == null) {
+                    newTable[hash] = new ExternalChainingMapEntry<K, V>(cur.getKey(), cur.getValue());
+                } else {
+                    newTable[hash] = new ExternalChainingMapEntry<K, V>(cur.getKey(), cur.getValue(), newTable[hash]);
+                }
+
+                cur = cur.getNext();
+            }
+        }
+
+        table = newTable;
+
     }
 
     /**
