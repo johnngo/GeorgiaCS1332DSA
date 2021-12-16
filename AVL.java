@@ -7,7 +7,8 @@ public class AVL<T extends Comparable<? super T>> {
     /**
      * DO NOT ADD ANY GLOBAL VARIABLES!
      */
-
+    private AVLNode<T> root;
+    private int size;
     /**
      * Updates the height and balance factor of a node using its
      * setter methods.
