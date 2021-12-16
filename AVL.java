@@ -30,7 +30,21 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public void updateHeightAndBF(AVLNode<T> currentNode) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        int leftHeight = -1;
+        int rightHeight = -1;
+
+        if (currentNode.getLeft() != null) {
+            leftHeight = currentNode.getLeft().getHeight();
+        }
+
+        if (currentNode.getRight() != null) {
+            rightHeight = currentNode.getRight().getHeight();
+        }
+
+        currentNode.setHeight(Math.max(leftHeight, rightHeight) + 1);
+        currentNode.setBalanceFactor(leftHeight - rightHeight);
     }
+    
 
     /**
      * Method that rotates a current node to the left. After saving the
