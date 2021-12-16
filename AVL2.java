@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 /**
@@ -35,6 +36,27 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public void add(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null) {
+            throw new IllegalArgumentException("Cannot add null to AVL.");
+        }
+
+        root = _add(root, data);
+    }
+
+    private AVLNode<T> _add(AVLNode<T> node, T data) {
+        if (node == null) {
+            node = new AVLNode<>(data);
+            size++;
+        } else if (data.compareTo(node.getData()) < 0) {
+            node.setLeft(_add(node.getLeft(), data));
+        } else if (data.compareTo(node.getData()) > 0) {
+            node.setRight(_add(node.getRight(), data));
+        }
+
+        updateHeightAndBF(node);
+        node = balance(node);
+
+        return node;
     }
 
     /**
@@ -68,6 +90,57 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public T remove(T data) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null) {
+            throw new IllegalArgumentException("Cannot remove null from AVL.");
+        }
+
+        ArrayList<T> dataAndSuccessor = new ArrayList<>(2);
+        dataAndSuccessor.add(null);
+        dataAndSuccessor.add(null);
+        root = _remove(root, data, dataAndSuccessor);
+
+        return dataAndSuccessor.get(0);
+    }
+
+    private AVLNode<T> _remove(AVLNode<T> node, T data, ArrayList<T> dataAndSuccessor) {
+        if (node == null) {
+            throw new NoSuchElementException("Cannot remove from AVL: data not found.");
+        } else if (data.compareTo(node.getData()) < 0) {
+            node.setLeft(_remove(node.getLeft(), data, dataAndSuccessor));
+        } else if (data.compareTo(node.getData()) > 0) {
+            node.setRight(_remove(node.getRight(), data, dataAndSuccessor));
+        } else {
+            dataAndSuccessor.set(0, node.getData());
+            size--;
+
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            } else if (node.getRight() == null) {
+                return node.getLeft();
+            } else if (node.getLeft() == null) {
+                return node.getRight();
+            } else {
+                node.setRight(_removeSuccessor(node.getRight(), dataAndSuccessor));
+                node.setData(dataAndSuccessor.get(1));
+            }
+        }
+
+        node = balance(node);
+
+        return node;
+    }
+
+    private AVLNode<T> _removeSuccessor(AVLNode<T> node, ArrayList<T> dataAndSuccessor) {
+        if (node.getLeft() == null) {
+            dataAndSuccessor.set(1, node.getData());
+            return node.getRight();
+        } else {
+            node.setLeft(_removeSuccessor(node.getLeft(), dataAndSuccessor));
+        }
+
+        node = balance(node);
+
+        return node;
     }
 
     /**
@@ -90,8 +163,21 @@ public class AVL<T extends Comparable<? super T>> {
      *
      * @param currentNode The node to update the height and balance factor of.
      */
-    private void updateHeightAndBF(AVLNode<T> node) {
+    private void updateHeightAndBF(AVLNode<T> currentNode) {
         // COPY YOUR CODE FROM PART 1 OF THE ASSIGNMENT!
+        int leftHeight = -1;
+        int rightHeight = -1;
+
+        if (currentNode.getLeft() != null) {
+            leftHeight = currentNode.getLeft().getHeight();
+        }
+
+        if (currentNode.getRight() != null) {
+            rightHeight = currentNode.getRight().getHeight();
+        }
+
+        currentNode.setHeight(Math.max(leftHeight, rightHeight) + 1);
+        currentNode.setBalanceFactor(leftHeight - rightHeight);
     }
 
     /**
@@ -117,6 +203,12 @@ public class AVL<T extends Comparable<? super T>> {
      */
     private AVLNode<T> rotateLeft(AVLNode<T> currentNode) {
         // COPY YOUR CODE FROM PART 1 OF THE ASSIGNMENT!
+        AVLNode<T> rightNode = currentNode.getRight();
+        currentNode.setRight(rightNode.getLeft());
+        rightNode.setLeft(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(rightNode);
+        return rightNode;
     }
 
     /**
@@ -142,6 +234,12 @@ public class AVL<T extends Comparable<? super T>> {
      */
     private AVLNode<T> rotateRight(AVLNode<T> currentNode) {
         // COPY YOUR CODE FROM PART 1 OF THE ASSIGNMENT!
+        AVLNode<T> leftNode = currentNode.getLeft();
+        currentNode.setLeft(leftNode.getRight());
+        leftNode.setRight(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(leftNode);
+        return leftNode;
     }
 
     /**
@@ -164,6 +262,21 @@ public class AVL<T extends Comparable<? super T>> {
      */
     private AVLNode<T> balance(AVLNode<T> currentNode) {
         // COPY YOUR CODE FROM PART 1 OF THE ASSIGNMENT!
+        updateHeightAndBF(currentNode);
+
+        if (currentNode.getBalanceFactor() < -1) {
+            if (currentNode.getRight().getBalanceFactor() >= 1) {
+                currentNode.setRight(rotateRight(currentNode.getRight()));
+            }
+            currentNode = rotateLeft(currentNode);
+        } else if (currentNode.getBalanceFactor() > 1) {
+            if (currentNode.getLeft().getBalanceFactor() <= -1) {
+                currentNode.setLeft(rotateLeft(currentNode.getLeft()));
+            }
+            currentNode = rotateRight(currentNode);
+        }
+
+        return currentNode;
     }
 
     /**
@@ -190,5 +303,13 @@ public class AVL<T extends Comparable<? super T>> {
     public int size() {
         // DO NOT MODIFY THIS METHOD!
         return size;
+    }
+
+    // Prints the level-order traversal, separated by spaces and ignoring nulls
+    @Override
+    public String toString() {
+        if (root == null) {
+            return "";
+        }
     }
 }
