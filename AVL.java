@@ -44,7 +44,7 @@ public class AVL<T extends Comparable<? super T>> {
         currentNode.setHeight(Math.max(leftHeight, rightHeight) + 1);
         currentNode.setBalanceFactor(leftHeight - rightHeight);
     }
-    
+
 
     /**
      * Method that rotates a current node to the left. After saving the
@@ -69,6 +69,12 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public AVLNode<T> rotateLeft(AVLNode<T> currentNode) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        AVLNode<T> rightNode = currentNode.getRight();
+        currentNode.setRight(rightNode.getLeft());
+        rightNode.setLeft(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(rightNode);
+        return rightNode;
     }
 
     /**
@@ -94,6 +100,12 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public AVLNode<T> rotateRight(AVLNode<T> currentNode) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        AVLNode<T> leftNode = currentNode.getLeft();
+        currentNode.setLeft(leftNode.getRight());
+        leftNode.setRight(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(leftNode);
+        return leftNode;
     }
 
     /**
