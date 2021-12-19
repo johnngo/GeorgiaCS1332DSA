@@ -64,6 +64,16 @@ public class Sorting {
      */
     public static <T> void selectionSort(T[] arr, Comparator<T> comparator) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        for(int swapIndex = arr.length -1; swapIndex > 0; swapIndex--) {
+            int max= 0;
+
+            for (int i = 1; i <= swapIndex;i++) {
+                if(comparator.compare(arr[i], arr[max]) > 0) {
+                    max = i;
+                }
+            }
+            swap(arr, max, swapIndex);
+        }
     }
 
     /**
@@ -86,6 +96,14 @@ public class Sorting {
      */
     public static <T> void insertionSort(T[] arr, Comparator<T> comparator) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        for(int unsortedStart = 1; unsortedStart < arr.length; unsortedStart++){
+            int i = unsortedStart;
+
+            while(i > 0 && comparator.compare(arr[i - 1], arr[i]) > 0){
+                swap(arr, i -1, i);
+                i--;
+            }
+        }
     }
 
 
