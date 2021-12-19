@@ -1,4 +1,6 @@
 import java.util.Comparator;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Your implementation of various iterative sorting algorithms.
@@ -27,6 +29,19 @@ public class Sorting {
      */
     public static <T> void bubbleSort(T[] arr, Comparator<T> comparator) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        int stopIndex = arr.length - 1;
+
+        while(stopIndex > 0) {
+            int lastSwap = 0;
+
+            for (int i = 0; i < stopIndex; i++) {
+                if(comparator.compare(arr[i], arr[i + 1])> 0) {
+                    swap(arr, i, i +1);
+                    lastSwap = i;
+                }
+            }
+            stopIndex = lastSwap;
+        }
     }
 
     /**
@@ -71,5 +86,12 @@ public class Sorting {
      */
     public static <T> void insertionSort(T[] arr, Comparator<T> comparator) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+    }
+
+
+    private static <T> void swap(T[] arr, int a, int b) {
+        T temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
     }
 }
