@@ -39,6 +39,47 @@ public class Sorting1 {
      */
     public static <T> void mergeSort(T[] arr, Comparator<T> comparator) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if(arr.length <= 1) {
+            return;
+        }
+
+        int midpoint = arr.length/2;
+        T[] left = (T[]) new Object[midpoint];
+        T[] right = (T[]) new Object[arr.length - midpoint];
+
+        for(int i = 0; i < midpoint; i++) {
+            left[i] = arr[i];
+        }
+
+        for (int i = midpoint; i < arr.length; i++){
+            right[i - midpoint] = arr[i];
+        }
+
+        mergeSort(left, comparator);
+        mergeSort(right, comparator);
+
+        int i = 0;
+        int j = 0;
+
+        while (i < left.length && j < right.length) {
+            if (comparator.compare(left[i], right[j]) <= 0) {
+                arr[i + j] = left[i];
+                i++;
+            } else {
+                arr[i + j] = right[j];
+                j++;
+            }
+        }
+
+        while (i < left.length) {
+            arr[i + j] = left[i];
+            i++;
+        }
+
+        while (j < right.length) {
+            arr[i + j] = right[j];
+            j++;
+        }
     }
 
     /**
@@ -73,5 +114,6 @@ public class Sorting1 {
      */
     public static void lsdRadixSort(int[] arr) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        
     }
 }
