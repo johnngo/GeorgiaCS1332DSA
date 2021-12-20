@@ -114,6 +114,44 @@ public class Sorting1 {
      */
     public static void lsdRadixSort(int[] arr) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
-        
+        int absMax = 0;
+
+        for(int num : arr){
+            if(num == Integer.MIN_VALUE) {
+                absMax = Integer.MAX_VALUE;
+                break;
+            } else if(Math.abs(num) > absMax){
+                absMax = Math.abs(num);
+            }
+        }
+
+        int tenToTheK =1;
+        absMax /= 10;
+
+        while (absMax != 0) {
+            tenToTheK *= 10;
+            absMax /= 10;
+        }
+
+        List<Integer>[] buckets = (LinkedList<Integer>[]) new LinkedList[19];
+
+        for (int i = 0; i < 19; i++) {
+            buckets[i] = new LinkedList<Integer>();
+        }
+
+        for (int digitPlace = 1; digitPlace <= tenToTheK; digitPlace *= 10) {
+            for (int num : arr) {
+                int digit = (num / digitPlace) % 10;
+                buckets[digit + 9].add(num);
+            }
+
+            int i = 0;
+
+            for (List<Integer> bucket : buckets) {
+                while (!bucket.isEmpty()) {
+                    arr[i++] = bucket.remove(0);
+                }
+            }
+        }
     }
 }
