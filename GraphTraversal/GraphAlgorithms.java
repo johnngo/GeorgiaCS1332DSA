@@ -40,6 +40,24 @@ public class GraphAlgorithms {
      */
     public static <T> List<Vertex<T>> bfs(Vertex<T> start, Graph<T> graph) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        Map<Vertex<T>, List<VertexDistance<T>>> adjList = graph.getAdjList();
+        if (!(adjList.containsKey(start))) {
+            throw new java.lang.IllegalArgumentException("Start provided does not exist in the graph.");
+        }
+        List<Vertex<T>> visited = new LinkedList<>();
+        Queue<Vertex<T>> vertexQ = new LinkedList<>();
+        visited.add(start);
+        vertexQ.add(start);
+        while (vertexQ.size() > 0) {
+            Vertex<T> v = vertexQ.remove();
+            for (VertexDistance<T> vertexDist : adjList.get(v)) {
+                if (!(visited.contains(vertexDist.getVertex()))) {
+                    visited.add(vertexDist.getVertex());
+                    vertexQ.add(vertexDist.getVertex());
+                }
+            }
+        }
+        return visited;
     }
 
     /**
@@ -72,5 +90,34 @@ public class GraphAlgorithms {
      */
     public static <T> List<Vertex<T>> dfs(Vertex<T> start, Graph<T> graph) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        Map<Vertex<T>, List<VertexDistance<T>>> adjList = graph.getAdjList();
+        if (!(adjList.containsKey(start))) {
+            throw new java.lang.IllegalArgumentException("Start must exist in the graph.");
+        }
+        List<Vertex<T>> visited = new LinkedList<>();
+        visited = dfsHelper(graph, start, visited);
+        return visited;
     }
+
+    /**
+     * This is the recursive helped method for DFS
+     *
+     * @param graph the graph to search through
+     * @param start the vertex to begin the dfs on
+     * @param visited list of vertices in visited order
+     * @param <T> the generic typing of the data
+     * @return list of vertices in visited order
+     */
+    private static <T> List<Vertex<T>> dfsHelper(Graph<T> graph, Vertex<T> start, List<Vertex<T>> visited) {
+        visited.add(start);
+        Map<Vertex<T>, List<VertexDistance<T>>> adjList = graph.getAdjList();
+        for (VertexDistance<T> VertexDistance : adjList.get(start)) {
+            if (!(visited.contains(VertexDistance.getVertex()))) {
+                dfsHelper(graph, VertexDistance.getVertex(), visited);
+            }
+        }
+        return visited;
+    }
+        
 }
+
